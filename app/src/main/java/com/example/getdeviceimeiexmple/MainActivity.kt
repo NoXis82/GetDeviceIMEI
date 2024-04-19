@@ -4,12 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Context.TELEPHONY_SERVICE
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.telephony.TelephonyManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.app.ActivityCompat
 import com.example.getdeviceimeiexmple.ui.theme.GetDeviceIMEIExmpleTheme
 
 class MainActivity : ComponentActivity() {
@@ -56,18 +52,34 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    DisplayIMEI(LocalContext.current, LocalContext.current as Activity)
+                    val test = isDevMode(LocalContext.current)
+                    DisplayIMEI(LocalContext.current, LocalContext.current as Activity, test)
                 }
             }
         }
 
+    }
+    private fun isDevMode(context: Context): Boolean {
+        return when {
+            Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
+                Settings.Secure.getInt(context.contentResolver,
+                    Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
+            }
+            Build.VERSION.SDK_INT == Build.VERSION_CODES.Q -> {
+                println("DEPRECATION")
+                @Suppress("DEPRECATION")
+                Settings.Secure.getInt(context.contentResolver,
+                    Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0
+            }
+            else -> false
+        }
     }
 }
 
 @SuppressLint("HardwareIds")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun DisplayIMEI(context: Context, activity: Activity) {
+fun DisplayIMEI(context: Context, activity: Activity, test: Boolean) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -88,6 +100,18 @@ fun DisplayIMEI(context: Context, activity: Activity) {
         //val imei = telephonyManager.imei
         Text(
             text = andId,
+            modifier = Modifier.padding(5.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+//        val adb = Settings.Secure.getInt(
+//            context.contentResolver,
+//            Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0
+//        )
+        //Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED
+        Text(
+            text = "Development settings enabled: $test",
             modifier = Modifier.padding(5.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
