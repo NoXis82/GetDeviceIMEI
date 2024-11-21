@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,7 +15,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,7 +44,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("HardwareIds")
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestSinglePermission.launch(Manifest.permission.READ_PHONE_STATE)
@@ -76,6 +80,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
 @SuppressLint("HardwareIds")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -104,19 +109,41 @@ fun DisplayIMEI(context: Context, activity: Activity, test: Boolean) {
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
+        Spacer(modifier = Modifier.height(4.dp))
 
 //        val adb = Settings.Secure.getInt(
 //            context.contentResolver,
 //            Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0
 //        )
         //Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED
+
         Text(
             text = "Development settings enabled: $test",
             modifier = Modifier.padding(5.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
-
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "Android Sdk: ${Build.VERSION.SDK_INT}",
+            modifier = Modifier.padding(5.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "Manufacturer: ${Build.MANUFACTURER}",
+            modifier = Modifier.padding(5.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = "Model: ${Build.MODEL}",
+            modifier = Modifier.padding(5.dp),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
 
     }
 }
